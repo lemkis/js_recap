@@ -71,7 +71,6 @@ You do not have to worry about releasing memory,  js uses garbage collection see
 
 It is a data type. Nearly all objects in JavaScript are instances of `Object`; a typical object inherits properties (including methods) from `Object.prototype`, although these properties may be shadowed (a.k.a. overridden). The only objects that don't inherit from `Object.prototype` are those with `null` prototype, or descended from other `null` prototype objects.
 
-Note that every function is in fact a `Function` object.
 
 
 # Properties
