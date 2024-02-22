@@ -4,13 +4,13 @@ Most of the materials used in this short summary is taken from the great Mozilla
 
 # Task for today
 
-Using [mozilla prime numbers example](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Introducing_workers) implement simple user api in html which as an input takes an integer `n` and as a result shows all primes smaller or equal to `n` (simple two html div tags for input and output will suffice + some button to fire calculations). If `n` is prime it should stress so by writing "`n` is a prime" in the output. This method should be non-blocking (notice that this procedure might be time consuming for large numbers - we do not want out browser to freeze). Some requirements
+Using [mozilla prime numbers example](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Introducing_workers) implement simple user api in html which as an input takes an integer `n` and as a result shows all primes smaller or equal to `n` (simple two html div tags for input and output will suffice + some button to fire calculations). If `n` is prime the output should contain "`n` is a prime" (instead of printing `n`). The function calculating required primes should be non-blocking (notice that such a procedure might be time consuming for large numbers - we do not want out browser to freeze). Some requirements
 
 - stick to general coding principles
 - throw custom errors (for how to create one, see e.g. [this link](https://javascript.info/custom-errors)) e.g. if user inputs invalid data
 - handle appropriately these errors (do not allow program to crush). A user might be malicious.
 - use some caching to speed up the upcoming user requests.
-- prepare two asynchronous  versions: one based on promises (equivalently, `async` functions) and the other based on (dedicated) `workers`.
+- prepare two asynchronous versions: one based on promises (equivalently, `async` functions) and the other based on (dedicated) `workers`.
 
 # Understanding the concurrency of js
 
