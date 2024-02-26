@@ -4,7 +4,7 @@ Most of the materials used in this short summary is taken from the great Mozilla
 
 # Task for today
 
-Inspired by [mozilla prime numbers example](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Introducing_workers) implement simple user api in html which as an input takes an integer `n` and as a result shows all primes smaller or equal to `n` (simple two html div tags for input and output will suffice + some button to fire calculations). If `n` is prime the output should contain "`n` is a prime" (instead of printing `n`). The function calculating required primes should be non-blocking (notice that such a procedure might be time consuming for large numbers - we do not want out browser to freeze). Some requirements
+Inspired by [mozilla prime numbers example](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Introducing_workers) implement simple user api in html which as an input takes an integer `n` and as a result shows all primes smaller or equal to `n` (simple two html div tags for input and output will suffice + some button to fire calculations). The function calculating required primes should be non-blocking (notice that such a procedure might be time consuming for large numbers - we do not want out browser to freeze). Some requirements
 
 - stick to general coding principles
 - throw custom errors (for how to create one, see e.g. [this link](https://javascript.info/custom-errors)) e.g. if user inputs invalid data
