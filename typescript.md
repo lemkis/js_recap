@@ -1,4 +1,4 @@
-t# Problems with pure js
+# Problems with pure js
 
 Consider the following code
 ```javascript
