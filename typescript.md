@@ -82,7 +82,9 @@ names.forEach((s) => {
   console.log(s.toUpperCase());
 });
 ```
-In this example, parameter `s:string`.
+In this example, parameter `s:string` (the process  of guessing the type of `s` is called `contextual typing` because the context that the function occurred within informs what type it should have).
+
+
 
 You can annotate the return type of a function as well:
 ```typescript
@@ -124,3 +126,132 @@ By default, values like `null` or `undefined` are assignable to any other type. 
 
 # Types
 `string` ("...") , `number` (int or float), `boolean` (true or false), `array` (e.g. number[], Array<number>, [1,2,3]), `any` (no type checking)
+
+## object type
+
+This is any JavaScript value with properties, e.g. arg of a function can be of the form `point: { x: number; y: number }`. Object can have optional properties
+```typescript
+function printName(obj: { first: string; last?: string }) {
+  // ...
+}
+// Both OK
+printName({ first: "Bob" });
+printName({ first: "Alice", last: "Alisson" });
+```
+Note that when you read from an optional property, you’ll have to check for undefined before using it.
+```typescript
+function printName(obj: { first: string; last?: string }) {
+  // Error - might crash if 'obj.last' wasn't provided!
+  console.log(obj.last.toUpperCase());
+'obj.last' is possibly 'undefined'.
+  if (obj.last !== undefined) {
+    // OK
+    console.log(obj.last.toUpperCase());
+  }
+ 
+  // A safe alternative using modern JavaScript syntax:
+  console.log(obj.last?.toUpperCase());
+}
+```
+
+## Union type
+
+The allow you to combine types e.g. `number | string`. You can handle each type separately (`narrowing`) using  `typeof` or `Array.isArray`.
+
+## Alias type
+
+To create new types. E.g.
+```typescript
+type Point = {
+  x: number;
+  y: number;
+};
+```
+or `type ID = number | string;`.
+Then you can annote variables with e.g. Point type,  
+```typescript
+// Exactly the same as the earlier example
+function printCoord(pt: Point) {
+  console.log("The coordinate's x value is " + pt.x);
+  console.log("The coordinate's y value is " + pt.y);
+}
+ 
+printCoord({ x: 100, y: 100 });
+```
+You can extend a type via intersections
+```typescript
+type Animal = {
+  name: string;
+}
+
+type Bear = Animal & { 
+  honey: boolean;
+}
+
+const bear = getBear();
+bear.name;
+bear.honey;
+```
+
+## Interface  
+Used to name an object type of a specific structure.
+```typescript
+interface Point {
+  x: number;
+  y: number;
+}
+ 
+function printCoord(pt: Point) {
+  console.log("The coordinate's x value is " + pt.x);
+  console.log("The coordinate's y value is " + pt.y);
+}
+ 
+printCoord({ x: 100, y: 100 });
+```
+Note that ts is only concerned with the structure of the value we passed to `printCoord `- it only cares that it has the expected properties. Being concerned only with the structure and capabilities of types is why we call TypeScript a `structurally typed` type system.
+
+
+You can extend interface via
+```typescript
+interface Animal {
+  name: string;
+}
+
+interface Bear extends Animal {
+  honey: boolean;
+}
+
+const bear = getBear();
+bear.name;
+bear.honey;
+```
+
+## Alias vs interface
+
+The key distinction is that a type cannot be re-opened to add new properties vs an interface which is always extendable. Hence you can do 
+```typescript
+interface Window {
+  title: string;
+}
+
+interface Window {
+  ts: TypeScriptAPI;
+}
+
+const src = 'const a = "Hello World"';
+window.ts.transpileModule(src, {});
+```
+but not 
+```typescript
+type Window = {
+  title: string;
+}
+
+type Window = {
+  ts: TypeScriptAPI;
+}
+
+ // Error: Duplicate identifier 'Window'.
+
+        
+```
