@@ -68,7 +68,28 @@ We do not have always write type annotations, e.g.
 ```typescript
 a = "string"
 ```
-In this case ts guesses that `a:string = "string"`. 
+In this case ts guesses that `a:string = "string"`. Similarly for arguments of anonymous functions
+```typescript
+const names = ["Alice", "Bob", "Eve"];
+ 
+// Contextual typing for function - parameter s inferred to have type string
+names.forEach(function (s) {
+  console.log(s.toUpperCase());
+});
+ 
+// Contextual typing also applies to arrow functions
+names.forEach((s) => {
+  console.log(s.toUpperCase());
+});
+```
+In this example, parameter `s:string`.
+
+You can annotate the return type of a function as well:
+```typescript
+async function getFavoriteNumber(): Promise<number> {
+  return 26;
+}
+```
 # Type erasure
 Notice that js cannot execute ts with type annotations. To solve this ts needs compilation to erase types. E.g. ts on our (corrected) example produces
 ```javascript
@@ -88,3 +109,18 @@ greet("Maddison", new Date());
 ```
 Remember to always use `es2015` target unless you have very good reason not to (e.g. compability with older browsers). 
 Remember that type annotation `never` change the runtime behaviour of your program!
+
+
+# Strictness flags
+
+In `tsconfing.json` file you can set how strict ts type checking should be. E.g. you can as strict as possible `"strict": true`. Otherwise you can choose what ts should check for you by launching some options e.g. `"noImplicitAny": true` or `"strictNullChecks": true`. 
+
+## noImplicitAny
+Sometimes ts does not infer type is lenient as assigns type `any` (plain js type). This flag notifies you about such cases.
+
+## strictNullChecks
+
+By default, values like `null` or `undefined` are assignable to any other type. This flag makes handling these cases more explicit (in case we forgot to handle them).
+
+# Types
+`string` ("...") , `number` (int or float), `boolean` (true or false), `array` (e.g. number[], Array<number>, [1,2,3]), `any` (no type checking)
