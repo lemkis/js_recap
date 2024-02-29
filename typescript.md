@@ -25,3 +25,5 @@ const user = {
 };
 user.location; // returns undefined
 ```
+
+Static typing property of ts solves many problems of such types. E.g. it can detect types when calling methods, check if operands of `operator<` are comparable and many more.
