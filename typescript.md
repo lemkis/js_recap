@@ -1,4 +1,4 @@
-# Problems with pure js
+t# Problems with pure js
 
 Consider the following code
 ```javascript
@@ -28,6 +28,19 @@ user.location; // returns undefined
 
 Static typing property of ts solves many problems of such types. E.g. it can detect typos when calling methods,  check if operands of `operator<` are comparable, check if a method exists (in particular code completion or error checking can be enabled in your editor) and many more.
 
-### Installing
+# Installing
 
 Execute in bash `sudo apt install node-typescript`.
+
+# Running
+
+Save 
+```javascript
+function greet(person, date) {
+  console.log(`Hello ${person}, today is ${date}!`);
+}
+ 
+greet("Brendan");
+```
+in file `example_with_bug.ts` and try to compile it using `tsc example_with_bug.ts`. 
+
