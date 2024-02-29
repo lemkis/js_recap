@@ -895,7 +895,7 @@ class S {
   //Static property 'name' conflicts with built-in property 'Function.name' of constructor function 'S'.
 }
 ```
-15.  Classes can be generic, however, fields in generaic class cannot be generic (remember that code is compiled into js!)
+15.  Classes can be generic, however, static fields in generic class cannot be generic (remember that code is compiled into js!)
 ```typescript
 class Box<Type> {
   static defaultValue: Type;
