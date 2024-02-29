@@ -1,3 +1,11 @@
+# Task for today
+
+Upgrade your previous js project to ts.
+
+# Acknowledgements
+
+These notes use materials/examples from [typescript handbook](https://www.typescriptlang.org/docs/handbook/intro.html).
+
 # Problems with pure js
 
 Consider the following code
