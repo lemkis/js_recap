@@ -167,8 +167,86 @@ function printName(obj: { first: string; last?: string }) {
 
 ## Union type
 
-The allow you to combine types e.g. `number | string`. You can handle each type separately (`narrowing`) using  `typeof` or `Array.isArray`.
+The allow you to combine types e.g. `number | string`. 
+Note that deduced type can be of union form,
+```typescript
+let x = Math.random() < 0.5 ? 10 : "hello world!";
+```
+where `x` is of type `string | number`.
+### How to handle union types?
+You can handle each type separately (`narrowing`) using  `typeof` or `Array.isArray`. 
+For example
+```typescript
+function padLeft(padding: number | string, input: string): string {
+  if (typeof padding === "number") {
+    return " ".repeat(padding) + input;
+  }
+  return padding + input;
+}
+```
+The part `typeof padding === "number"` is called `type guard`. TypeScript follows possible paths of execution that our programs can take to analyze the most specific possible type of a value at a given position. It looks at these special checks (called type guards) and assignments, and the process of refining types to more specific types than declared is called `narrowing`.
 
+Watch out. The code below might not work as you think (at first glance)
+```typescript
+function printAll(strs: string | string[] | null) {
+  if (typeof strs === "object") {
+    for (const s of strs) {
+'strs' is possibly 'null'.
+      console.log(s);
+    }
+  } else if (typeof strs === "string") {
+    console.log(strs);
+  } else {
+    // do nothing
+  }
+}
+```
+<details><summary>Reason</summary>the typeof `null` is "object". You can guard agaist null` using if (strs && typeof strs === "object")`</details>
+
+You can narrow types using operator `in` (checks if an object contains a property) ,
+```typescript
+type Fish = { swim: () => void };
+type Bird = { fly: () => void };
+ 
+function move(animal: Fish | Bird) {
+  if ("swim" in animal) {
+    return animal.swim();
+  }
+ 
+  return animal.fly();
+}
+```
+
+You can narrow types using `instanceof` (checks if a type contains a prototype of given type),
+```typescript
+function logValue(x: Date | string) {
+  if (x instanceof Date) {
+    console.log(x.toUTCString());
+               
+(parameter) x: Date
+  } else {
+    console.log(x.toUpperCase());
+               
+(parameter) x: string
+  }
+}
+```
+
+You can narrow types using operator `===`,
+```typescript
+function example(x: string | number, y: string | boolean) {
+  if (x === y) {
+    // We can now call any 'string' method on 'x' or 'y'.
+    x.toUpperCase();
+    y.toLowerCase();
+  } else {
+    console.log(x);
+//(parameter) x: string | number
+    console.log(y);
+//(parameter) y: string | boolean
+  }
+}
+```
 ## Alias type
 
 To create new types. E.g.
@@ -333,3 +411,30 @@ let obj = {
 };
 console.log(obj[sym]); // "value"
 ```
+# Using type predicates
+Recall that the `as` keyword is a Type Assertion in TypeScript which tells the compiler to consider the object as another type than the type the compiler infers the object to be.
+```typescript
+function isFish(pet: Fish | Bird): pet is Fish {
+  return (pet as Fish).swim !== undefined;
+}
+```
+`pet is Fish` is our type predicate in this example. A predicate takes the form `parameterName is Type`, where `parameterName` must be the name of a parameter from the current function signature.
+
+Any time `isFish` is called with some variable, TypeScript will narrow that variable to that specific type if the original type is compatible. Moreover, below in the `else` branch compiler knows that the variable type is not Fish,
+```typescript
+let pet = getSmallPet();
+ 
+if (isFish(pet)) {
+  pet.swim();
+} else {
+  pet.fly();
+}
+```
+You can use predicates to filter arrays,
+```typescript
+const zoo: (Fish | Bird)[] = [getSmallPet(), getSmallPet(), getSmallPet()];
+const underWater1: Fish[] = zoo.filter(isFish);
+// or, equivalently
+const underWater2: Fish[] = zoo.filter(isFish) as Fish[];
+```
+# Never type
