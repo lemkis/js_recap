@@ -44,10 +44,47 @@ greet("Brendan");
 ```
 as `example_with_bug.ts` and try to compile it using `tsc example_with_bug.ts`.  See what happens. Note that js file was generated despite the fact that ts compiler informed us about an error. This behaviour allows you to copy correct (working) js file into ts one and compile/run it even if type checking produces errors (every js code is valid ts code). If you want to be more restrictive and do not generate js file in case when compilation fails use flag `--noEmitOnError`.
 
-# Explicit types
+# Explicit types, type annotations
 You can tell ts what are the types of variables. Take for example:
 ```typescript
 function greet(person: string, date: Date) {
   console.log(`Hello ${person}, today is ${date.toDateString()}!`);
 }
 ```
+Is this correct code? Will it compile?
+```typescript
+function greet(person: string, date: Date) {
+  console.log(`Hello ${person}, today is ${date.toDateString()}!`);
+}
+ 
+greet("Maddison", Date());
+```
+<details>
+  <summary>Solution</summary>
+  Change Date() to new Date()
+</details>
+
+We do not have always write type annotations, e.g.
+```typescript
+a = "string"
+```
+In this case ts guesses that `a:string = "string"`. 
+# Type erasure
+Notice that js cannot execute ts with type annotations. To solve this ts needs compiles to erase types. E.g. ts on our (corrected) example produces
+```javascript
+"use strict";
+function greet(person, date) {
+    console.log("Hello ".concat(person, ", today is ").concat(date.toDateString(), "!"));
+}
+greet("Maddison", new Date());
+
+```
+Note that there are no type annotations and concatenation method is used. In this example the code after compilation was downleveled to old ECMA standard (that's why concat method appeared). If you target new ECMA standard by using flag `--target es2015` you will get
+```javascript
+function greet(person, date) {
+  console.log(`Hello ${person}, today is ${date.toDateString()}!`);
+}
+greet("Maddison", new Date());
+```
+Remember to always use `es2015` target unless you have very good reason not to (e.g. compability with older browsers). 
+Remember that type annotation `never` change the runtime behaviour of your program!
