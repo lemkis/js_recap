@@ -117,7 +117,7 @@ function greet(person, date) {
 }
 greet("Maddison", new Date());
 ```
-Remember to always use `es2015` target unless you have very good reason not to (e.g. compability with older browsers). 
+Remember to always use up-to-date ecma standard [see wiki list](https://en.wikipedia.org/wiki/ECMAScript_version_history) target unless you have very good reason not to (e.g. compability with older browsers). 
 Remember that type annotation `never` change the runtime behaviour of your program!
 
 
