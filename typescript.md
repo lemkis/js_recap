@@ -172,7 +172,7 @@ Note that when you read from an optional property, you’ll have to check for un
 function printName(obj: { first: string; last?: string }) {
   // Error - might crash if 'obj.last' wasn't provided!
   console.log(obj.last.toUpperCase());
-'obj.last' is possibly 'undefined'.
+  //'obj.last' is possibly 'undefined'.
   if (obj.last !== undefined) {
     // OK
     console.log(obj.last.toUpperCase());
