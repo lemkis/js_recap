@@ -438,3 +438,20 @@ const underWater1: Fish[] = zoo.filter(isFish);
 const underWater2: Fish[] = zoo.filter(isFish) as Fish[];
 ```
 # Never type
+When narrowing, you can reduce the options of a union to a point where you have removed all possibilities and have nothing left. In those cases, TypeScript will use a `never` type to represent a state which shouldn’t exist. Using the fact that you can assign to `never` type only `never` type, `never` can serve as a check for unreachable code. Indeed, by assigning to `never` union type object compiler with throw an error if there is some type you did not handle previously. For example 
+```typescript
+type Shape = Circle | Square | Triangle;
+
+function getArea(shape: Shape) {
+  switch (shape.kind) {
+    case "circle":
+      return Math.PI * shape.radius ** 2;
+    case "square":
+      return shape.sideLength ** 2;
+    default:
+      const _exhaustiveCheck: never = shape;
+// Type 'Triangle' is not assignable to type 'never'.
+      return _exhaustiveCheck;
+  }
+}
+```
