@@ -26,4 +26,8 @@ const user = {
 user.location; // returns undefined
 ```
 
-Static typing property of ts solves many problems of such types. E.g. it can detect types when calling methods, check if operands of `operator<` are comparable and many more.
+Static typing property of ts solves many problems of such types. E.g. it can detect typos when calling methods,  check if operands of `operator<` are comparable, check if a method exists (in particular code completion or error checking can be enabled in your editor) and many more.
+
+### Installing
+
+Execute in bash `sudo apt install node-typescript`.
