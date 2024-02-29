@@ -40,8 +40,9 @@ Static typing property of ts solves many problems of such types. E.g. it can det
 
 Execute in bash `sudo apt install node-typescript`.
 
-# Running
 
+# Running
+If you are using WebStorm read [this](https://www.jetbrains.com/help/webstorm/compiling-typescript-to-javascript.html#ts_create_tsconfig_json)
 Save 
 ```javascript
 function greet(person, date) {
