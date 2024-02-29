@@ -42,8 +42,7 @@ Execute in bash `sudo apt install node-typescript`.
 
 
 # Running
-If you are using WebStorm read [this](https://www.jetbrains.com/help/webstorm/compiling-typescript-to-javascript.html#ts_create_tsconfig_json)
-Save 
+If you are using WebStorm read [this](https://www.jetbrains.com/help/webstorm/compiling-typescript-to-javascript.html#ts_create_tsconfig_json). In case you are going to use terminal firstly save 
 ```javascript
 function greet(person, date) {
   console.log(`Hello ${person}, today is ${date}!`);
