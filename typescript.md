@@ -902,7 +902,7 @@ class Box<Type> {
   //Static members cannot reference class type parameters.
 }
 ```
-16. You can use `abstract` class with `abstract methods` (methods which are not implmented in the class but are in the derived ones). You cannot create an `abstract` class using `new`.
+16. You can use `abstract` class with `abstract methods` (methods which are not implemented in the class but are in the derived ones). You cannot create an `abstract` class using `new`.
 17. Relationships Between Classes. In most cases, classes in TypeScript are compared structurally, the same as other types.
 For example, these two classes can be used in place of each other because they’re identical:
 ```typescript
