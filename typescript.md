@@ -70,7 +70,7 @@ a = "string"
 ```
 In this case ts guesses that `a:string = "string"`. 
 # Type erasure
-Notice that js cannot execute ts with type annotations. To solve this ts needs compiles to erase types. E.g. ts on our (corrected) example produces
+Notice that js cannot execute ts with type annotations. To solve this ts needs compilation to erase types. E.g. ts on our (corrected) example produces
 ```javascript
 "use strict";
 function greet(person, date) {
