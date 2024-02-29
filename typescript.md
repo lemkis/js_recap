@@ -967,14 +967,7 @@ export default class RandomNumberGenerator {}
 // @filename: app.ts
 import type { Cat, Dog } from "./animal.js";
 // or import { type Cat, type Dog } from "./animal.js";
-
-
 import RandomNumberGenerator, { pi as π } from "./maths.js";
- 
-RandomNumberGenerator;
-         
-//(alias) class RandomNumberGenerator
-import RandomNumberGenerator
  
 console.log(π);
 ```
