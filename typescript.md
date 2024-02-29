@@ -973,7 +973,7 @@ import RandomNumberGenerator, { pi as π } from "./maths.js";
  
 RandomNumberGenerator;
          
-(alias) class RandomNumberGenerator
+//(alias) class RandomNumberGenerator
 import RandomNumberGenerator
  
 console.log(π);
