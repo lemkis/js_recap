@@ -125,8 +125,19 @@ Sometimes ts does not infer type is lenient as assigns type `any` (plain js type
 By default, values like `null` or `undefined` are assignable to any other type. This flag makes handling these cases more explicit (in case we forgot to handle them).
 
 # Types
-`string` ("...") , `number` (int or float), `boolean` (true or false), `array` (e.g. number[], Array&lt;number&gt;, [1,2,3]), `any` (no type checking)
+`string` ("...") , `number` (int or float), `boolean` (true or false), `array` (e.g. number[], Array&lt;number&gt;, [1,2,3]), `any` (no type checking), `null` (represents the intentional absence of any object value. It is one of js's primitive values and is treated as falsy for boolean operations), `undefined`  (a variable that has not been assigned a value is of type undefined)
 
+# Type Assertions
+Add information about the type of a value that TypeScript can’t know about. Example calling js object method,
+```typescript
+const myCanvas = document.getElementById("main_canvas") as HTMLCanvasElement;
+```
+or equivalently
+```typescript
+const myCanvas = <HTMLCanvasElement>document.getElementById("main_canvas");
+```
+
+Beware, since type assertions are removed at compile-time, there is no runtime checking associated with a type assertion. There won’t be an exception or null generated if the type assertion is wrong.
 ## object type
 
 This is any JavaScript value with properties, e.g. arg of a function can be of the form `point: { x: number; y: number }`. Object can have optional properties
@@ -250,8 +261,75 @@ type Window = {
 type Window = {
   ts: TypeScriptAPI;
 }
+ // Error: Duplicate identifie# Literal typesr 'Window'.        
+```
 
- // Error: Duplicate identifier 'Window'.
+# Literal types number and string
+Created using `const` declaration, e.g.
+```typescript
+const constantString = "Hello World";
+// Because `constantString` can only represent 1 possible string, it
+// has a literal type representation
+```
+They can be useful, e.g.
+```typescript
+function printText(s: string, alignment: "left" | "right" | "center") {
+  // ...
+}
+printText("Hello, world", "left");
+printText("G'day, mate", "centre");
+```
+Note that you will get error: Argument of type '"centre"' is not assignable to parameter of type '"left" | "right" | "center"'.
+Similarly,
+```typescript
+function compare(a: string, b: string): -1 | 0 | 1 {
+  return a === b ? 0 : a > b ? 1 : -1;
+}
+```
+How to change object properties into literals?
+```typescript
+const req = { url: "https://example.com", method: "GET" as "GET" };
+handleRequest(req.url, req.method as "GET");
+```
+or make all properties const (converting numbers and strings into literals) via
+```typescript
+req = { url: "https://example.com", method: "GET" } as const;
+handleRequest(req.url, req.method);
+```
 
-        
+## Enum
+By example
+```typescript
+enum Direction {
+  Up = 1,
+  Down,
+  Left,
+  Right,
+}
+```
+
+## BigInt
+From ES2020 onwards, there is a primitive in JavaScript used for very large integers
+```typescript
+// Creating a bigint via the BigInt function
+const oneHundred: bigint = BigInt(100);
+ 
+// Creating a BigInt via the literal syntax
+const anotherHundred: bigint = 100n;
+```
+
+## symbol
+Symbols are immutable, and unique.
+```typescript
+let sym2 = Symbol("key");
+let sym3 = Symbol("key");
+sym2 === sym3; // false, symbols are unique
+```
+Just like strings, symbols can be used as keys for object properties.
+```typescript
+const sym = Symbol();
+let obj = {
+  [sym]: "value",
+};
+console.log(obj[sym]); // "value"
 ```
