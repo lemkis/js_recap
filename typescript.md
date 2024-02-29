@@ -42,5 +42,12 @@ function greet(person, date) {
  
 greet("Brendan");
 ```
-in file `example_with_bug.ts` and try to compile it using `tsc example_with_bug.ts`.  See what happens. Note that js file was generated despite the fact that ts compiler informed us about error. This behaviour allows you to copy correct js file into ts one and run it even if type checking produces errors (every js code is valid ts code). If you want to be more restrictive and do not generate js file in case compilation fails use flag `--noEmitOnError`.
+as `example_with_bug.ts` and try to compile it using `tsc example_with_bug.ts`.  See what happens. Note that js file was generated despite the fact that ts compiler informed us about an error. This behaviour allows you to copy correct (working) js file into ts one and compile/run it even if type checking produces errors (every js code is valid ts code). If you want to be more restrictive and do not generate js file in case when compilation fails use flag `--noEmitOnError`.
 
+# Explicit types
+You can tell ts what are the types of variables. Take for example:
+```typescript
+function greet(person: string, date: Date) {
+  console.log(`Hello ${person}, today is ${date.toDateString()}!`);
+}
+```
