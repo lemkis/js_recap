@@ -25,7 +25,7 @@ message();
 Note that we got error: `This expression is not callable. Type 'String' has no call signatures.`. Imagine a situation in which we did not thoroughly tested our program and this piece
 of code was never run. Since js can detect this error only at the run time, we will never notice this bug.
 
-If our class does not have a field we would like to be notified of this. However, js returns `undefined` instead.
+If our class does not have a field we would like to be notified of this fact. However, js returns `undefined` instead.
 ```javascript
 const user = {
   name: "Daniel",
