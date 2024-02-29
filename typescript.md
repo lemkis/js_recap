@@ -174,7 +174,17 @@ function printName(obj: { first: string; last?: string }) {
   console.log(obj.last?.toUpperCase());
 }
 ```
-
+## Conditional type
+```typescript
+interface Animal {
+  live(): void;
+}
+interface Dog extends Animal {
+  woof(): void;
+}
+ 
+type Example1 = Dog extends Animal ? number : string;
+```
 ## Union type
 
 The allow you to combine types e.g. `number | string`. 
@@ -933,3 +943,69 @@ fn({});
 fn(fn);
 ```
 
+# Modules
+In TypeScript, just as in ECMAScript 2015, any file containing a top-level import or export is considered a module.
+```typescript
+// @filename: animal.ts
+export type Cat = { breed: string; yearOfBirth: number };
+export interface Dog {
+  breeds: string[];
+  yearOfBirth: number;
+}
+
+// @filename: maths.ts
+export const pi = 3.14;
+export default class RandomNumberGenerator {}
+ 
+// @filename: app.ts
+import type { Cat, Dog } from "./animal.js";
+// or import { type Cat, type Dog } from "./animal.js";
+
+
+import RandomNumberGenerator, { pi as π } from "./maths.js";
+ 
+RandomNumberGenerator;
+         
+(alias) class RandomNumberGenerator
+import RandomNumberGenerator
+ 
+console.log(π);
+```
+# Namespaces
+ You can use namespace to better organize you code. E.g. 
+ ```typescript
+namespace Validation {
+  export interface StringValidator {
+    isAcceptable(s: string): boolean;
+  }
+  const lettersRegexp = /^[A-Za-z]+$/;
+  const numberRegexp = /^[0-9]+$/;
+  export class LettersOnlyValidator implements StringValidator {
+    isAcceptable(s: string) {
+      return lettersRegexp.test(s);
+    }
+  }
+  export class ZipCodeValidator implements StringValidator {
+    isAcceptable(s: string) {
+      return s.length === 5 && numberRegexp.test(s);
+    }
+  }
+}
+// Some samples to try
+let strings = ["Hello", "98052", "101"];
+// Validators to use
+let validators: { [s: string]: Validation.StringValidator } = {};
+validators["ZIP code"] = new Validation.ZipCodeValidator();
+validators["Letters only"] = new Validation.LettersOnlyValidator();
+// Show whether each string passed each validator
+for (let s of strings) {
+  for (let name in validators) {
+    console.log(
+      `"${s}" - ${
+        validators[name].isAcceptable(s) ? "matches" : "does not match"
+      } ${name}`
+    );
+  }
+}
+```
+You can split namespaces across multiple files. But then you must use `--outFile` flag when compiling: `tsc --outFile sample.js Validation.ts LettersOnlyValidator.ts ZipCodeValidator.ts Test.ts` to put all input files into one js file.
