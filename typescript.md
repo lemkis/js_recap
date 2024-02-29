@@ -125,7 +125,7 @@ Sometimes ts does not infer type is lenient as assigns type `any` (plain js type
 By default, values like `null` or `undefined` are assignable to any other type. This flag makes handling these cases more explicit (in case we forgot to handle them).
 
 # Types
-`string` ("...") , `number` (int or float), `boolean` (true or false), `array` (e.g. number[], Array<number>, [1,2,3]), `any` (no type checking)
+`string` ("...") , `number` (int or float), `boolean` (true or false), `array` (e.g. number[], Array&lt;number&gt;, [1,2,3]), `any` (no type checking)
 
 ## object type
 
