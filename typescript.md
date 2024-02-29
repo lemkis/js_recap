@@ -125,7 +125,17 @@ Sometimes ts does not infer type is lenient as assigns type `any` (plain js type
 By default, values like `null` or `undefined` are assignable to any other type. This flag makes handling these cases more explicit (in case we forgot to handle them).
 
 # Types
-`string` ("...") , `number` (int or float), `boolean` (true or false), `array` (e.g. number[], Array&lt;number&gt;, [1,2,3]), `any` (no type checking), `null` (represents the intentional absence of any object value. It is one of js's primitive values and is treated as falsy for boolean operations), `undefined`  (a variable that has not been assigned a value is of type undefined)
+1. `string` ("...") ,
+2. `number` (int or float),
+3. `boolean` (true or false),
+4. `array` (e.g. number[], Array&lt;number&gt;, [1,2,3]),
+5. `any` (no type checking),
+6. `null` (represents the intentional absence of any object value. It is one of js's primitive values and is treated as falsy for boolean operations),
+7. `undefined`  (a variable that has not been assigned a value is of type undefined),
+8. `void` (type which indicates that a function returns nothing),
+9. `object` (refers to any value that isn’t a primitive (`string`, `number`, `bigint`, `boolean`, `symbol`, `null`, or `undefined`); is different from the empty object type { }; is different from the global type Object),
+10. `unknown` (type-safe counterpart of `any`). Anything is assignable to `unknown`, but `unknown` isn't assignable to anything but itself and any without a type assertion or a control flow based narrowing. Likewise, no operations are permitted on an `unknown` without first asserting or narrowing to a more specific type. You use it e.g. when you want to describe the least-capable type in TypeScript;  this is useful for APIs that want to signal “this can be any value, so you must perform some type of checking before you use it”. This forces users to safely introspect returned values. For more see [stackoverflow](https://stackoverflow.com/questions/51439843/unknown-vs-any)
+11. `never`, ( represents values which are never observed), a function can return `never` type if it in fact never returns a value (e.g. throws an error). Later on you will learn that it can represent the type left when there is nothing left in a union type.
 
 # Type Assertions
 Add information about the type of a value that TypeScript can’t know about. Example calling js object method,
@@ -455,3 +465,471 @@ function getArea(shape: Shape) {
   }
 }
 ```
+
+
+# Function Type Expressions
+```typescript
+function greeter(fn: (a: string) => void) {
+  fn("Hello, World");
+}
+```
+
+Note that the parameter name is required. The function type `(string) => void` means a function with a parameter named string of type `any`!
+
+# Call Signatures
+
+In JavaScript, functions can have properties in addition to being callable. However, the function type expression syntax doesn’t allow for declaring properties. If we want to describe something callable with properties, we can write a call signature in an object type:
+
+```typescript
+type DescribableFunction = {
+  description: string;
+  (someArg: number): boolean;
+};
+function doSomething(fn: DescribableFunction) {
+  console.log(fn.description + " returned " + fn(6));
+}
+ 
+function myFunc(someArg: number) {
+  return someArg > 3;
+}
+myFunc.description = "default description";
+ 
+doSomething(myFunc);
+```
+
+Note that the syntax is slightly different compared to a function type expression - use `:` between the parameter list and the return type rather than `=>`.
+
+# Construct Signatures
+
+JavaScript functions can also be invoked with the `new` operator. TypeScript refers to these as constructors because they usually create a new object. You can write a construct signature by adding the `new` keyword in front of a call signature:
+
+```typescript
+type SomeConstructor = {
+  new (s: string): SomeObject;
+};
+function fn(ctor: SomeConstructor) {
+  return new ctor("hello");
+}
+```
+
+Some objects, like JavaScript’s `Date` object, can be called with or without new. You can combine call and construct signatures in the same type arbitrarily:
+```typescript
+interface CallOrConstruct {
+  (n?: number): string;
+  new (s: string): Date;
+}
+```
+
+# Generic Functions
+
+We can write functions using `type parameter` (in this case named `Type`),
+```typescript
+function firstElement<Type>(arr: Type[]): Type | undefined {
+  return arr[0];
+}
+```
+`Type` is deduced (no need to specify `Type` directly when calling this function).
+```typescript
+// s is of type 'string'
+const s = firstElement(["a", "b", "c"]);
+```
+or 
+```typescript
+function map<Input, Output>(arr: Input[], func: (arg: Input) => Output): Output[] {
+  return arr.map(func);
+}
+ 
+// Parameter 'n' is of type 'string'
+// 'parsed' is of type 'number[]'
+const parsed = map(["1", "2", "3"], (n) => parseInt(n));
+```
+
+We can constrain types using `extends` keyword. For example let us write a function that returns the longer of two values. To do this, we need a length property that’s a number. We constrain the type parameter to that type by writing an extends clause:
+
+```typescript
+function longest<Type extends { length: number }>(a: Type, b: Type) {
+  if (a.length >= b.length) {
+    return a;
+  } else {
+    return b;
+  }
+}
+```
+
+You can manually specify generic types when calling a function
+```typescript
+function combine<Type>(arr1: Type[], arr2: Type[]): Type[] {
+  return arr1.concat(arr2);
+}
+const arr = combine<string | number>([1, 2, 3], ["hello"]);
+```
+Note that without `<string | number>` this code would not compile.
+
+# More on functions
+ You can have `optional arguments`, e.g. `declare function f(x?: number): void;`. You can have `default parameters`, e.g. `function f(x = 10)`. You can overload functions. Remember that when you overload in TypeScript, you only have one implementation with multiple signatures,
+ ```typescript
+class Foo {
+    myMethod(a: string);
+    myMethod(a: number);
+    myMethod(a: number, b: string);
+    myMethod(a: string | number, b?: string) {
+        alert(a.toString());
+    }
+}
+```
+The implementation signature must be compatible with all the overloads. As JavaScript doesn't have types, compiled ts cannot end up creating two functions taking same number of arguments. Hence the following will not compile
+```typescript
+class A {
+constructor(){}
+create(a:number) {}
+create(b:string) {}
+}
+```
+For more read [stackoverflow](https://stackoverflow.com/questions/12688275/how-to-do-method-overloading-in-typescript/12689054#12689054).
+
+
+# Rest Parameters and Arguments
+
+We can define functions that take an unbounded number of arguments using rest parameters, e.g.
+```typescript
+function multiply(n: number, ...m: number[]) {
+  return m.map((x) => n * x);
+}
+// 'a' gets value [10, 20, 30, 40]
+const a = multiply(10, 1, 2, 3, 4);
+```
+Conversely, we can provide a variable number of arguments from an iterable object (for example, an array) using the spread syntax. For example, the push method of arrays takes any number of arguments:
+
+```typescript
+const arr1 = [1, 2, 3];
+const arr2 = [4, 5, 6];
+arr1.push(...arr2);
+Try
+```
+
+# Parameter destructing - unpacking objects
+
+```typescript
+function sum({ a, b, c }: { a: number; b: number; c: number }) {
+  console.log(a + b + c);
+}
+sum({ a: 10, b: 3, c: 9 });
+```
+
+
+# Objects
+
+## Optional Properties
+```typescript
+interface PaintOptions {
+  shape: Shape;
+  xPos?: number;
+  yPos?: number;
+}
+ 
+function paintShape(opts: PaintOptions) {
+  // ...
+}
+ 
+const shape = getShape();
+paintShape({ shape });
+paintShape({ shape, xPos: 100 });
+paintShape({ shape, yPos: 100 });
+paintShape({ shape, xPos: 100, yPos: 100 });
+```
+
+You can do unpacking with the default values
+```typescript
+function paintShape({ shape, xPos = 0, yPos = 0 }: PaintOptions);
+```
+
+
+## readonly Properties 
+```typescript
+interface SomeType {
+  readonly prop: string;
+}
+```
+Now  if you have an object of type `SomeType` you cannot assign to `prop`. On the other hand you can modify `name` and `age` of `resident` in 
+```typescript
+interface Home {
+  readonly resident: { name: string; age: number };
+}
+```
+objects.
+
+# Index Signatures
+```typescript
+interface StringArray {
+  [index: number]: string;
+}
+ 
+const myArray: StringArray = getStringArray();
+const secondItem = myArray[1];
+```
+
+This index signature states that when a `StringArray` is indexed with a `number` , it will return a `string`. 
+
+Only some types are allowed for index signature properties: `string` (dictionary), `number` (array), `symbol`, `template string patterns`, and `union types consisting only of these`.
+
+While string index signatures are a powerful way to describe the “dictionary” pattern, they also enforce that all properties match their return type. This is because a string index declares that `obj.property` is also available as `obj["property"]`. In the following example, name’s type does not match the string index’s type, and the type checker gives an error:
+```typescript
+interface NumberDictionary {
+  [index: string]: number;
+ 
+  length: number; // ok
+  name: string; //error
+}
+```
+On the other hand if you change `[index: string]: number;` to `[index: string]: string | number;` this example will work.
+
+# Generic interface
+As with function interface can be "templated",
+```typescript
+interface Box<Type> {
+  contents: Type;
+}
+let box: Box<string>;
+```
+
+A built-in examples are `Array<T>` or `ReadonlyArray<T>`.
+
+
+# Tuple types
+
+A `tuple type` is another sort of `Array` type that knows exactly how many elements it contains, and exactly which types it contains at specific positions. Note that if we try to index past the number of elements, we’ll get an error.
+
+
+
+```typescript
+type StringNumberPair = [string, number];
+```
+
+You can "unpack" tuple via
+```typescript
+function doSomething(stringHash: [string, number]) {
+  const [inputString, hash] = stringHash;
+// const hash: number
+//const inputString: string
+  console.log(inputString);
+  console.log(hash);
+}
+```
+
+Types can be optional e.g. `type Either2dOr3d = [number, number, number?];`.
+Tuples can use rest parameters 
+```typescript
+type StringNumberBooleans = [string, number, ...boolean[]];
+type StringBooleansNumber = [string, ...boolean[], number];
+type BooleansStringNumber = [...boolean[], string, number];
+const a: StringNumberBooleans = ["hello", 1];
+const b: StringNumberBooleans = ["beautiful", 2, true];
+const c: StringNumberBooleans = ["world", 3, true, false, true, false, true];
+```
+
+Fancy example
+```typescript
+function readButtonInput(...args: [string, number, ...boolean[]]) {
+  const [name, version, ...input] = args;
+  // ...
+}
+```
+is basically equivalent to
+```typescript
+function readButtonInput(name: string, version: number, ...input: boolean[]) {
+  // ...
+}
+```
+
+# Classes
+
+1. Fields can have default values (`initializers`)
+```typescript
+class Point {
+  x = 0;
+  y = 0;
+}
+ ```
+2. Configuration `--strictPropertyInitialization` sets controls whether class fields need to be initialized in the constructor.
+
+3. A field can be `readonly`. This prevents assignments to the field `outside of the constructor`.
+
+4.  You can overload constructors.
+
+5. If you have a base class then ts will notify you if you forget to call base constructor via `super(...)`.
+6. You can use getters (`get`) and setters (`set`). If get exists but no set, the property is automatically readonly. If the type of the setter parameter is not specified, it is inferred from the return type of the getter. Getters and setters must have the same Member Visibility.
+7. Since TypeScript 4.3, it is possible to have accessors with different types for getting and setting.
+```typescript
+class Thing {
+  _size = 0;
+ 
+  get size(): number {
+    return this._size;
+  }
+ 
+  set size(value: string | number | boolean) {
+    let num = Number(value);
+ 
+    // Don't allow NaN, Infinity, etc
+ 
+    if (!Number.isFinite(num)) {
+      this._size = 0;
+      return;
+    }
+ 
+    this._size = num;
+  }
+}
+```
+8. Classes can declare `index signatures`; these work the same as Index Signatures for other object types:
+```typescript
+class MyClass {
+  [s: string]: boolean | ((s: string) => boolean);
+ 
+  check(s: string) {
+    return this[s] as boolean;
+  }
+}
+```
+9. You can use an `implements` clause to check that a class satisfies a particular `interface`. An error will be issued if a class fails to correctly implement it:
+```typescript
+interface Pingable {
+  ping(): void;
+}
+ 
+class Sonar implements Pingable {
+  ping() {
+    console.log("ping!");
+  }
+}
+```
+Note that implements does not change the type of class `Sonar`.
+
+10. Classes may `extend` from a `base` class. A derived class has all the properties and methods of its base class, and can also define additional members.
+```typescript
+class Animal {
+  move() {
+    console.log("Moving along!");
+  }
+}
+ 
+class Dog extends Animal {
+  woof(times: number) {
+    for (let i = 0; i < times; i++) {
+      console.log("woof!");
+    }
+  }
+}
+ 
+const d = new Dog();
+// Base class method
+d.move();
+// Derived class method
+d.woof(3);
+```
+11. Can `override` methods.
+```typescript
+class Base {
+  greet() {
+    console.log("Hello, world!");
+  }
+}
+ 
+class Derived extends Base {
+  greet(name?: string) {
+    if (name === undefined) {
+      super.greet();
+    } else {
+      console.log(`Hello, ${name.toUpperCase()}`);
+    }
+  }
+}
+ 
+const d = new Derived();
+d.greet();
+d.greet("reader");
+```
+It’s important that a derived class follow its base class contract. Remember that it’s very common (and always legal!) to refer to a derived class instance through a base class reference:
+
+```typescript
+// Alias the derived instance through a base class reference
+const b: Base = d;
+// No problem
+b.greet();
+```
+12. When `target >= ES2022` or `useDefineForClassFields` is true, class fields are initialized after the parent class constructor completes, overwriting any value set by the parent class. 
+13. You can set `Member Visibility` to `public` (everybody can use), `protected` (subclasses can use) or `private` (only the class), e.g.
+```typescript
+class Greeter {
+  public greet() {
+    console.log("hi!");
+  }
+}
+const g = new Greeter();
+g.greet();
+```
+Beware! Like other aspects of TypeScript’s type system, `private` and `protected` are only enforced during type checking.
+This means that JavaScript runtime constructs like in or simple property lookup can still access a private or protected member.
+Moreover, `private` allows access using bracket notation during type checking. This makes private-declared fields potentially easier to access for things like unit tests, with the drawback that these fields are `soft private` and don’t strictly enforce privacy. Unlike TypeScripts’s private, JavaScript’s private fields (#) remain private after compilation and do not provide the previously mentioned escape hatches like bracket notation access, making them `hard private`.
+14. Classes can have `static` fields and methods. Watch out! Some names are reserved, e.g.
+```typescript
+class S {
+  static name = "S!"; //error
+  //Static property 'name' conflicts with built-in property 'Function.name' of constructor function 'S'.
+}
+```
+15.  Classes can be generic, however, fields in generaic class cannot be generic (remember that code is compiled into js!)
+```typescript
+class Box<Type> {
+  static defaultValue: Type;
+  //Static members cannot reference class type parameters.
+}
+```
+16. You can use `abstract` class with `abstract methods` (methods which are not implmented in the class but are in the derived ones). You cannot create an `abstract` class using `new`.
+17. Relationships Between Classes. In most cases, classes in TypeScript are compared structurally, the same as other types.
+For example, these two classes can be used in place of each other because they’re identical:
+```typescript
+class Point1 {
+  x = 0;
+  y = 0;
+}
+ 
+class Point2 {
+  x = 0;
+  y = 0;
+}
+ 
+// OK
+const p: Point1 = new Point2();
+```
+Similarly, subtype relationships between classes exist even if there’s no explicit inheritance:
+```typescript
+class Person {
+  name: string;
+  age: number;
+}
+ 
+class Employee {
+  name: string;
+  age: number;
+  salary: number;
+}
+ 
+// OK
+const p: Person = new Employee();
+```
+
+Note that `empty classes` have no members. In a structural type system, a type with no members is generally a supertype of anything else. So if you write an empty class (don’t!), anything can be used in place of it. 
+```typescript
+class Empty {}
+ 
+function fn(x: Empty) {
+  // can't do anything with 'x', so I won't
+}
+ 
+// All OK!
+fn(window);
+fn({});
+fn(fn);
+```
+
