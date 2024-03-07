@@ -42,10 +42,9 @@ app.listen(port, () => {
 }
 ```
 Now you can build `index.js` via `npm run build`. Try `npm run dev` out to see if
-`nodemon` works. Note that starting from node 19 there is more modern approach via `"dev": "node --watch -r ts-node/register index.ts"`, in particular, there is no need for nodemon.
-10. You can configure `nodemon` via creating `nodemon.json` file or adding object to
+`nodemon` works. Note that starting from node 19 there is more modern approach via `"dev": "node --watch -r ts-node/register index.ts"`, in particular, there is no need for nodemon. You can configure `nodemon` via creating `nodemon.json` file or adding object to
     `package.json`. For more details read [nodemon documentation](https://www.npmjs.com/package/nodemon).
-11. At the end read docs:
+# At the end read docs
     - [console](https://nodejs.org/api/console.html)
     - [errors](https://nodejs.org/api/errors.html)
     - [events](https://nodejs.org/api/events.html)
