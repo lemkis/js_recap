@@ -47,17 +47,17 @@ Now you can build `index.js` via `npm run build`. Try `npm run dev` out to see i
 # At the end read docs
 
    - [console](https://nodejs.org/api/console.html)
-       - [errors](https://nodejs.org/api/errors.html)
-       - [events](https://nodejs.org/api/events.html)
-       - [file system](https://nodejs.org/api/fs.html)
-    - [globals](https://nodejs.org/api/globals.html)
-    - [os](https://nodejs.org/api/os.html)
-    - [path](https://nodejs.org/api/path.html)
-    - [process](https://nodejs.org/api/process.html)
-    - [url](https://nodejs.org/api/url.html)
-    - [test runner](https://nodejs.org/api/test.html)
-    - [assert](https://nodejs.org/docs/latest/api/assert.html)
-    - learn also about new features  e.g. [fetch api](https://dev.to/andrewbaisden/the-nodejs-18-fetch-api-72m)
+   - [errors](https://nodejs.org/api/errors.html)
+   - [events](https://nodejs.org/api/events.html)
+   - [file system](https://nodejs.org/api/fs.html)
+   - [globals](https://nodejs.org/api/globals.html)
+   - [os](https://nodejs.org/api/os.html)
+   - [path](https://nodejs.org/api/path.html)
+   - [process](https://nodejs.org/api/process.html)
+   - [url](https://nodejs.org/api/url.html)
+   - [test runner](https://nodejs.org/api/test.html)
+   - [assert](https://nodejs.org/docs/latest/api/assert.html)
+   - learn also about new features  e.g. [fetch api](https://dev.to/andrewbaisden/the-nodejs-18-fetch-api-72m)
 Some examples:
 ```typescript
 import {test, mock} from 'node:test';
