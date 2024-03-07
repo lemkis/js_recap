@@ -10,7 +10,6 @@ via `npm i -D typescript @types/express @types/node` (see what was added to `pac
 5. Create configuration file for ts via `npx tsc --init`. Change the output dir to `./build`
 6. Create `index.ts` file in the root dir. Add to it
 ```typescript
-// src/index.js
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 
