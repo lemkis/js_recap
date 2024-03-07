@@ -36,7 +36,7 @@ app.listen(port, () => {
   "scripts": {
     "build": "npx tsc",
     "start": "node build/index.js",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon index.ts"
   }
 }
 ```
