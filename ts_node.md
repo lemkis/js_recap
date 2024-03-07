@@ -45,10 +45,11 @@ Now you can build `index.js` via `npm run build`. Try `npm run dev` out to see i
 `nodemon` works. Note that starting from node 19 there is more modern approach via `"dev": "node --watch -r ts-node/register index.ts"`, in particular, there is no need for nodemon. You can configure `nodemon` via creating `nodemon.json` file or adding object to
     `package.json`. For more details read [nodemon documentation](https://www.npmjs.com/package/nodemon).
 # At the end read docs
-    - [console](https://nodejs.org/api/console.html)
-    - [errors](https://nodejs.org/api/errors.html)
-    - [events](https://nodejs.org/api/events.html)
-    - [file system](https://nodejs.org/api/fs.html)
+
+   - [console](https://nodejs.org/api/console.html)
+       - [errors](https://nodejs.org/api/errors.html)
+       - [events](https://nodejs.org/api/events.html)
+       - [file system](https://nodejs.org/api/fs.html)
     - [globals](https://nodejs.org/api/globals.html)
     - [os](https://nodejs.org/api/os.html)
     - [path](https://nodejs.org/api/path.html)
