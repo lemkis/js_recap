@@ -112,7 +112,7 @@ visit [docs for models](https://www.prisma.io/docs/orm/prisma-schema/data-model/
    allowed to use the one you most like. In this tutorial we introduce prisma because
    it is easy to use, well documented, popular, has many examples, can work with many
    databases including `postgresql`, `mysql`, `sqlite`, `sqlserver`, `mongodb` or
-   `cockroachdb`. Below just for demonstration we use `sqlite`. Last but not least it
+   `cockroachdb`. Below just for demonstration we use `sqlite`. Last but not least prisma
    supports typescript which gives you the benefits of type-safety at zero cost by
    auto-generating types from your database schema. Just perfect for our ts-based
    project :)
