@@ -122,8 +122,7 @@ visit [docs for models](https://www.prisma.io/docs/orm/prisma-schema/data-model/
    schema file and configures SQLite as your database.
    At the end read the info displayed after the execution of
    this command. In particular, set the `DATABASE_URL` in the `.env` file to point to
-   your existing database, which in our case is `DATABASE_URL="file:./database/example.
-   db"` (to see other type of connections
+   your existing database, which in our case is `DATABASE_URL="file:./database/example.db"` (to see other type of connections
    see [connection urls](https://www.prisma.io/docs/orm/reference/connection-urls))
 4. You're now ready to model your data and create your
    database with some tables. Open newly created file `prisma/schema.prisma` (prisma
