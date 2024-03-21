@@ -394,8 +394,7 @@ Now try if your application works as expected!
 process.env.NODE_ENV === "production"
 ```
 
-6. Layouts
-   A layout is simply a Handlebars template with a `{{{body}}}` placeholder. Usually it
+6. A layout is simply a Handlebars template with a `{{{body}}}` placeholder. Usually it
    will be an HTML page wrapper into which views will be rendered. To better
    understand this concept read `renderView(viewPath, options|callback, [callback])`
    documentation [here](https://www.npmjs.com/package/express-handlebars)
@@ -416,8 +415,7 @@ process.env.NODE_ENV === "production"
 </html>
 ```
 
-7. Helpers
-   Helper functions, or "helpers" are functions that can be registered with Handlebars and
+7.  Helper functions, or "helpers" are functions that can be registered with Handlebars and
    can be called within a template. Helpers can be used for transforming output, iterating
    over data, etc. To keep with the spirit of logic-less templates, helpers are the place
    where logic should be defined.
