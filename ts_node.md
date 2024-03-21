@@ -267,3 +267,312 @@ express works and then analyze
 
 11. Now you are ready to create a database for the first project :) In case of any doubts
     questions you can always see [prisma docs](https://www.prisma.io/docs).
+
+
+
+
+# Dynamic html pages, views
+
+1. Firstly install handlebars via `npm install express-handlebars`
+2. Prepare views directory: create `./views`  and `./views/layouts` directories.
+3. Now let see how to use handlebars with express. Add the following lines to you code
+   (below `app = express()` stands for the express application):
+
+```typescript
+import {engine} from 'express-handlebars';
+
+app.engine('.hbs', engine({extname: '.hbs'}));
+app.set('view engine', '.hbs');
+app.set('views', './views');
+```
+
+Let us analyse what happends in this snippet. Firstly we import `engine` and we create
+instance of `engine` in line 2 where configuration `{extname: '.hbs'}` is passed to the
+constructor (application now knows that `.hbs` is the extension of our views. In the next
+line we let know our application that we use handlebars engine as the rendering engine.
+In the last line we tell our application that our views are stored in the `views`
+directory. Summing it up, after these lines are executed our application knows where
+to look for the files, what is the extension of view file and how to render such a file.
+Note that, under the hood, in the constructor of engine, the default parameter
+`layoutsDir`
+is set
+to `express settings.view + layouts/` see
+[documentation](https://www.npmjs.com/package/express-handlebars).
+Nota bene the configuration of the engine is of the form
+
+```typescript
+export interface ConfigOptions {
+    handlebars?: HandlebarsImport;
+    extname?: string;
+    encoding?: BufferEncoding;
+    layoutsDir?: string;
+    partialsDir?: string | string[] | PartialsDirObject | PartialsDirObject[];
+    defaultLayout?: string | false;
+    helpers?: UnknownObject;
+    compilerOptions?: CompileOptions;
+    runtimeOptions?: Handlebars.RuntimeOptions;
+}
+```
+
+4. Now let us see how to render a home view in express. To this end create file `.
+   /views/home.hbs` and paste to it
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Example App - Home</title>
+</head>
+<body>
+{{#if showTitle}}
+<h1>Personal webpage</h1>
+{{/if}}
+<p>Hello my name is {{name}}!</p>
+</body>
+</html>
+```
+
+Some comments are in place. Firstly note that double curly (moustache) brackets are used
+for the placeholders `{{#if showTitle}}`, `{{/if}}` and `{{name}}`. The `showTitle`
+and `name` are just parameters which our application will pass to this template and
+when it happens our renderer (handlebars) will replace these placeholders by the
+passed values. E.g.
+if our
+applications passes
+object `{showTitle:true, name="John"}` then the above template will be rendered to
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Example App - Home</title>
+</head>
+<body>
+<h1>Personal webpage</h1>
+<p>Hello my name is John!</p>
+</body>
+</html>
+```
+
+Finally, the `if` statement allows to render parts of view conditionally on passed
+values. In our case we do or don't display `<h1>Personal webpage</h1>` depending on the
+passed
+value
+of parameter `showTitle`.
+
+Now, replace our old root path handler by
+
+```typescript
+app.get('/', (req, res) => {
+    res.render('home', {
+        layout: false,
+        showTitle: true,
+        name: "John"
+    });
+});
+```
+
+As mentioned above we pass `showTitle` and `name` to the `home.hbs` view so that our
+application can render this view. Note that additionally we passed `layout:false`
+which tells the renderer not to use layout (a layout is a concept in handlebar which
+we will explain later on).
+Now try if your application works as expected!
+
+5. Caching. Handlebars view engine uses a smart template caching strategy. In
+   development, templates will always be loaded from disk, i.e., no caching. In
+   production, raw files and compiled Handlebars templates are aggressively cached.
+   The easiest way to control template/view caching is through Express' view cache
+   setting:
+   ```
+   app.enable('view cache')
+   ```
+   Express enables this setting by default when in production mode, i.e.:
+
+```
+process.env.NODE_ENV === "production"
+```
+
+6. Layouts
+   A layout is simply a Handlebars template with a `{{{body}}}` placeholder. Usually it
+   will be an HTML page wrapper into which views will be rendered. To better
+   understand this concept read `renderView(viewPath, options|callback, [callback])`
+   documentation [here](https://www.npmjs.com/package/express-handlebars)
+   Example:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Example App</title>
+</head>
+<body>
+
+{{{body}}}
+
+</body>
+</html>
+```
+
+7. Helpers
+   Helper functions, or "helpers" are functions that can be registered with Handlebars and
+   can be called within a template. Helpers can be used for transforming output, iterating
+   over data, etc. To keep with the spirit of logic-less templates, helpers are the place
+   where logic should be defined.
+   Handlebars ships with some built-in helpers, such as: `with`, `if`, `each`, etc. Note
+   that
+   we have already seen a usage of `if` helper. Most
+   applications will need to extend this set of helpers to include app-specific logic and
+   transformations. Beyond defining global helpers on `Handlebars`, this view engine
+   supports
+   ExpressHandlebars instance-level helpers via the helpers configuration property, and
+   render-level helpers via `options.helpers` when calling the `render()`
+   and `renderView()`
+   methods. Let us modify our example to include some helpers. Firstly, add `helpers` to  
+   engine constructor
+
+```typescript
+const view_extension = '.hbs';
+const helpers = {
+    foo() {
+        return 'FOO!';
+    },
+    bar(argument: string) {
+        return 'BAR!' + argument;
+    }
+};
+const hbs_engine = engine({
+    extname: view_extension,
+    helpers: helpers,
+})
+app.engine(view_extension, hbs_engine);
+```
+
+To see how to use helpers replace the paragraph in `home.hbs` by
+
+```html
+<p>Hello my name is {{name}}! Now we call foo helper {{foo}} and bar helper with argument
+    name
+    {{bar name}}</p>
+```
+
+You can overload helpers locally passing helpers object to the `render` method. For
+example replace `res.render(...)` by
+
+```typescript
+app.get('/', (req, res) => {
+    res.render('home', {
+        layout: false,
+        showTitle: true,
+        name: "John",
+        helpers: {
+            foo(): string {
+                return 'FOO! overloaded locally!';
+            }
+        }
+    });
+});
+```
+
+and see what has changed compared to the previous version.
+
+## Built-in helpers
+
+1. We have seen a usage of `if` helper.
+
+2. There is another one called `with` which allows you
+   to change evaluation concept (useful e.g. when nested parameters are passed to the
+   view).
+   For example
+
+```
+{{#with person}}
+{{firstname}} {{lastname}}
+{{/with}}
+```
+
+and we pass
+
+```typescript
+{
+    person: {
+        firstname: "Yehuda",
+            lastname
+    :
+        "Katz",
+    }
+,
+}
+```
+
+In this example `with` allowed to change context to nested object `person` and use its
+properties directly via `{{firstname}}` and `{{lastname}}` instead of using `{{person.
+firstname}}` and `{{person.lastname}}` respectively.
+
+3. `each` helper allows you to iterate over lists, e.g. you can create unordere html
+   list via
+
+```html
+
+<ul class="people_list">
+    {{#each people}}
+    <li>{{this}}</li>
+    {{/each}}
+</ul>
+```
+
+and pass object containing list of `people`
+
+```typescript
+{
+    people: [
+        "Yehuda Katz",
+        "Alan Johnson",
+        "Charles Jolley",
+    ],
+}
+```
+
+4. For more see [documentation for built-ins](https://handlebarsjs.
+   com/guide/builtin-helpers.html)
+
+## Partials for code reuse and shared templates
+
+Think about a partial as about small piece of view which can be included in many other 
+views.
+To do so
+you just use the following syntax: `{{>foo/bar}}` which includes 
+`views/partials/foo/bar.hbs` partial into a given place. Similarly to `helpers` you 
+can pass (additional) `partials` object when rendering. 
+Create now `views/partials` directory and empty `views/partials/title.hbs` file. 
+Paste to `title.hbs`
+```html
+{{#if showTitle}}
+<h1>Personal webpage with partial</h1>
+{{/if}}
+```
+and modify `body.hbs`
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Example App - Home</title>
+</head>
+<body>
+{{>title}}
+<p>Hello my name is {{name}}!</p>
+</body>
+</html>
+```
+See if it works.
+
+## Further reading
+Now you know the basics of views. To learn more read:
+1. [express-handlebars documentation](https://www.npmjs.com/package/express-handlebars)
+2. [handlebars expressions](https://handlebarsjs.com/guide/expressions.html)
+3. [handlebars intro](https://handlebarsjs.com/guide/#installation)
+4. [handlebars partials](https://handlebarsjs.com/guide/partials.html)
+5. You can look for even more information in this [guide](https://handlebarsjs.com/guide/)
