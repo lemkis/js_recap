@@ -483,7 +483,7 @@ and see what has changed compared to the previous version.
 1. We have seen a usage of `if` helper.
 
 2. There is another one called `with` which allows you
-   to change evaluation concept (useful e.g. when nested parameters are passed to the
+   to change evaluation context (useful e.g. when nested parameters are passed to the
    view).
    For example
 
