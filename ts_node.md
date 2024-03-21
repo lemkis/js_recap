@@ -499,9 +499,7 @@ and we pass
 {
     person: {
         firstname: "Yehuda",
-            lastname
-    :
-        "Katz",
+        lastname: "Katz",
     }
 ,
 }
