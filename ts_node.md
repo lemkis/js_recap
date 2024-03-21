@@ -533,8 +533,7 @@ and pass object containing list of `people`
 }
 ```
 
-4. For more see [documentation for built-ins](https://handlebarsjs.
-   com/guide/builtin-helpers.html)
+4. For more see [documentation for built-ins](https://handlebarsjs.com/guide/builtin-helpers.html)
 
 ## Partials for code reuse and shared templates
 
