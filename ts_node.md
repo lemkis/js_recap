@@ -562,7 +562,8 @@ and modify `body.hbs`
 </html>
 ```
 See if it works.
-
+## Exercise
+Create in `layouts` directory file named `main.bds` (this default layout used for all views) and modify you code so that `body.bds` uses `main.bds` layout.
 ## Further reading
 Now you know the basics of views. To learn more read:
 1. [express-handlebars documentation](https://www.npmjs.com/package/express-handlebars)
