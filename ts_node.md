@@ -541,8 +541,7 @@ Think about a partial as about small piece of view which can be included in many
 views.
 To do so
 you just use the following syntax: `{{>foo/bar}}` which includes 
-`views/partials/foo/bar.hbs` partial into a given place. Similarly to `helpers` you 
-can pass (additional) `partials` object when rendering. 
+`views/partials/foo/bar.hbs` partial into a given place.
 Create now `views/partials` directory and empty `views/partials/title.hbs` file. 
 Paste to `title.hbs`
 ```html
