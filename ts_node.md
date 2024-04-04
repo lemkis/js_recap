@@ -571,3 +571,146 @@ Now you know the basics of views. To learn more read:
 3. [handlebars intro](https://handlebarsjs.com/guide/#installation)
 4. [handlebars partials](https://handlebarsjs.com/guide/partials.html)
 5. You can look for even more information in this [guide](https://handlebarsjs.com/guide/)
+
+
+
+
+
+
+# EXPRESS
+
+## Creating route handlers
+You can respond to get requests via
+```typescript
+app.get("/", function (req, res) {
+  res.send("Hello World!");
+});
+```
+or in response to any HTTP method
+```typescript
+app.all("/secret", function (req, res, next) {
+  console.log("Accessing the secret section…");
+  next(); // pass control to the next handler
+});
+
+```
+## Routers
+Often it is useful to group route handlers for a particular part of a site together and access them using a common route-prefix. This is achieved by using the `express.Router` object, e.g.
+
+```typescript
+// wiki.js - Wiki route module
+router.get("/", function (req, res) {
+  res.send("Wiki home page");
+});
+router.get("/about", function (req, res) {
+  res.send("About this wiki");
+});
+```
+and then `app.use("/wiki", wiki);`
+
+## Middleware
+
+Middleware is used extensively in Express apps, for tasks from serving static files to error handling, to compressing HTTP responses. Whereas route functions end the HTTP request-response cycle by returning some response to the HTTP client, middleware functions typically perform some operation on the request or response and then call the next function in the "stack", which might be more middleware or a route handler. The order in which middleware is called is up to the app developer.
+
+You can add a middleware function to the processing chain for `all` responses with `app.use()`, or for a specific HTTP verb using the associated method: `app.get()`, `app.post()`, etc. General structure of middleware is the following one:
+```typescript
+function (req, res, next) {
+  // Perform some operations
+  next(); // Call next() so Express will call the next middleware function in the chain.
+};
+```
+or if you want to handle errors
+```typescript
+function (err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
+};
+```
+Note that Express comes with a built-in error handler, which takes care of any remaining errors that might be encountered in the app. This default error-handling middleware function is added at the end of the middleware function stack. If you pass an error to `next()` and you do not handle it in an error handler, it will be handled by the built-in error handler; the error will be written to the client with the stack trace.
+You can serve static files via
+```typescript
+app.use("/virtual_prefix", express.static("public"));
+```
+Now you may load files accessing e.g. `http://localhost:3000/virtual_prefix/images/dog.jpg`.
+
+A full list of middlewares is available [here](https://expressjs.com/en/resources/middleware.html)
+
+# Routes and controllers
+
+- "Routes" to forward the supported requests (and any information encoded in request URLs) to the appropriate controller functions.
+
+- Controller functions to get the requested data from the models, create an HTML page displaying the data, and return it to the user to view in the browser.
+
+- Views (templates) used by the controllers to render the data.
+
+-  Router functions are Express middleware, which means that they must either complete (respond to) the request or call the next function in the chain. 
+
+- Route paths can also be string patterns. String patterns use a form of regular expression syntax to define patterns of endpoints that will be matched see [syntax here](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes#route_paths)
+
+- Route parameters are named URL segments used to capture values at specific positions in the URL. The named segments are prefixed with a colon and then the name (E.g., /:your_parameter_name/). The captured values are stored in the req.params object using the parameter names as keys (E.g., `req.params.your_parameter_name`). The names of route parameters must be made up of "word characters" (A-Z, a-z, 0-9, and _).
+
+- The route functions shown earlier all have arguments `req` and `res`, which represent the request and response, respectively. Route functions are also called with a third argument `next`, which can be used to pass errors to the Express middleware chain.
+```typescript
+router.get("/about", (req, res, next) => {
+    
+    if (err) {
+      return next(err);
+    }
+    res.render("about_view", { title: "About", list: queryResults });
+  });
+});
+```
+If you want to handle exceptions you must firstly catch it and then pass it as a regular error. To simplify things use in such a case the express-async-handler module which defines a wrapper function that hides the `try, catch` block and the code to forward the error so that you need to write code only for the case where we assume success.
+```typescript
+// const asyncHandler = require("express-async-handler");
+  asyncHandler(async (req, res, next) => {
+    const successfulResult = await some_function();
+    res.render("about_view", { title: "About", list: successfulResult });
+  }
+);
+```
+
+# Exercise
+
+Create LocalLibrary following [tutorial](https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/routes#routes_needed_for_the_locallibrary)
+
+For a solution you can look [here](https://github.com/mdn/express-locallibrary-tutorial)
+
+
+# Passport middleware
+
+See [signin with username and password github](https://github.com/passport/todos-express-password) and the corresponding [tutorial](https://www.passportjs.org/tutorials/password/). You can look at [this](https://www.passportjs.org/howtos/password/) as well.
+
+You can protect routes by using 
+```typescript
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated())
+    return next();
+  else
+    // Return error content: res.jsonp(...) or redirect: res.redirect('/login')
+}
+
+app.get('/account', ensureAuthenticated, function(req, res) {
+  // Do something with user via req.user
+});
+```
+ or as in the tutorial use `var ensureLogIn = require('connect-ensure-login').ensureLoggedIn` or as in the [official passport-local](https://github.com/jaredhanson/passport-local)
+ ```typescript
+ app.post('/login', 
+  passport.authenticate('local', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/');
+  });
+```
+
+You can see other added (by the passport) request attributes in passport's, `lib/http/request.js` file.
+
+
+
+
+
+
+
+
+
+
