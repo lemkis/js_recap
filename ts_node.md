@@ -627,7 +627,8 @@ function (err, req, res, next) {
 };
 ```
 Note that Express comes with a built-in error handler, which takes care of any remaining errors that might be encountered in the app. This default error-handling middleware function is added at the end of the middleware function stack. If you pass an error to `next()` and you do not handle it in an error handler, it will be handled by the built-in error handler; the error will be written to the client with the stack trace.
-You can serve static files via
+
+As a last example you can serve static files via
 ```typescript
 app.use("/virtual_prefix", express.static("public"));
 ```
