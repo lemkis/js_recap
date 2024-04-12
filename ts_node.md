@@ -998,4 +998,6 @@ This can be permitted using Cross-Origin Resource Sharing (CORS), an HTTP-header
 
 
 # Example 
+
+Please do not run this example - I havent checked if it is secure to do so. If you want to do so take a glance at the code before you execute anything.
 [vulnerable nodejs](https://github.com/xuezzou/Vulnerable-nodejs)
