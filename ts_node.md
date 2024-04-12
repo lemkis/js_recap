@@ -992,7 +992,7 @@ Web content's  `origin` is defined by the scheme (protocol), hostname (domain), 
 
 Same-origin policy is a fundamental security mechanism of the web that restricts how a document or script loaded from one origin can interact with a resource from another origin. It helps isolate potentially malicious documents, reducing possible attack vectors.
 
-    In general, documents from one origin cannot make requests to other origins. This makes sense because you don't want sites to be able to interfere with one another and access things they shouldn't. It does make sense to relax this restriction in some circumstances; for example, you might have multiple sites that interact with each other, and you may want these sites to request resources from one another, such as using fetch().
+In general, documents from one origin cannot make requests to other origins. This makes sense because you don't want sites to be able to interfere with one another and access things they shouldn't. It does make sense to relax this restriction in some circumstances; for example, you might have multiple sites that interact with each other, and you may want these sites to request resources from one another, such as using fetch().
 
 This can be permitted using Cross-Origin Resource Sharing (CORS), an HTTP-header-based mechanism that allows a server to indicate any origins (domain, scheme, or port) other than its own from which a browser should permit loading resources.
 
