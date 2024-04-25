@@ -29,6 +29,13 @@
 - [Security services provided by browsers](#security-services-provided-by-browsers)
   - [Same-origin policy and CORS](#same-origin-policy-and-cors)
 - [Example](#example)
+- [Testing](#testing)
+  - [Dummy objects](#dummy-objects)
+  - [Fake objects](#fake-objects)
+  - [Mocking](#mocking)
+  - [Stubbing](#stubbing)
+  - [Fixtures](#fixtures)
+- [Mocking databases and requests in nodejs with jest](#mocking-databases-and-requests-in-nodejs-with-jest)
 
 # nodejs with ts and express
 
@@ -992,12 +999,133 @@ Web content's  `origin` is defined by the scheme (protocol), hostname (domain), 
 
 Same-origin policy is a fundamental security mechanism of the web that restricts how a document or script loaded from one origin can interact with a resource from another origin. It helps isolate potentially malicious documents, reducing possible attack vectors.
 
-In general, documents from one origin cannot make requests to other origins. This makes sense because you don't want sites to be able to interfere with one another and access things they shouldn't. It does make sense to relax this restriction in some circumstances; for example, you might have multiple sites that interact with each other, and you may want these sites to request resources from one another, such as using fetch().
+    In general, documents from one origin cannot make requests to other origins. This makes sense because you don't want sites to be able to interfere with one another and access things they shouldn't. It does make sense to relax this restriction in some circumstances; for example, you might have multiple sites that interact with each other, and you may want these sites to request resources from one another, such as using fetch().
 
 This can be permitted using Cross-Origin Resource Sharing (CORS), an HTTP-header-based mechanism that allows a server to indicate any origins (domain, scheme, or port) other than its own from which a browser should permit loading resources.
 
 
 # Example 
-
-Please do not run this example - I havent checked if it is secure to do so. If you want to do so take a glance at the code before you execute anything.
 [vulnerable nodejs](https://github.com/xuezzou/Vulnerable-nodejs)
+
+
+# Testing
+Let us recall some basic concepts.
+
+
+
+
+
+## Dummy objects 
+
+Objects of such a type are passed around but never actually used. Usually they are just used to fill parameter lists.
+
+## Fake objects 
+
+These objects actually have working implementations, but usually take some shortcut which makes them not suitable for production (an in memory database is a good example).
+
+
+
+
+
+## Mocking
+
+This is technique used in testing to replace real objects with fake ones - mocks. This allows you to isolate the code being tested from external dependencies making tests more reliable and easier to maintain. 
+
+Usually we use mocks when we want to test behaviours.
+
+Some examples. We can control how many times a method was called.
+```python
+mock = Mock(return_value=None)
+mock('foo', bar='baz')
+mock.assert_called_once_with('foo', bar='baz')
+``` 
+We can set return values for a mocked method.
+```python
+mock = Mock()
+mock.side_effect = Exception('Boom!')
+mock()
+```
+or 
+```python
+mock = Mock()
+mock.side_effect = [3, 2, 1]
+mock(), mock(), mock()
+```
+
+Think about a mock as about a stub with an assertion that the method gets called
+
+
+## Stubbing
+
+Is similar to mocking but instead of replacing the entire objects you replace specific attributes or methods. In this way you can control the behaviour of some parts of an object keeping the rest of it intact.
+
+Stubs provide canned answers to calls made during the test.
+Stubs are written with predetermined behavior.
+Usually you use stubs when you want to test states (not behaviours).
+
+## Fixtures
+
+The purpose of a test fixture is to ensure that there is a well known and fixed environment in which tests are run so that results are repeatable. Some people call this the test context. E.g. preparation of input data and set-up/creation of fake or mock objects.
+
+Let us see how does it work in python. At a basic level, test functions request fixtures they require by declaring them as arguments.
+
+When pytest goes to run a test, it looks at the parameters in that test function’s signature, and then searches for fixtures that have the same names as those parameters. Once pytest finds them, it runs those fixtures, captures what they returned (if anything), and passes those objects into the test function as arguments.
+
+Quick example
+```python
+import pytest
+
+
+class Fruit:
+    def __init__(self, name):
+        self.name = name
+        self.cubed = False
+
+    def cube(self):
+        self.cubed = True
+
+
+class FruitSalad:
+    def __init__(self, *fruit_bowl):
+        self.fruit = fruit_bowl
+        self._cube_fruit()
+
+    def _cube_fruit(self):
+        for fruit in self.fruit:
+            fruit.cube()
+
+
+# Arrange
+@pytest.fixture
+def fruit_bowl():
+    return [Fruit("apple"), Fruit("banana")]
+
+
+def test_fruit_salad(fruit_bowl):
+    # Act
+    fruit_salad = FruitSalad(*fruit_bowl)
+
+    # Assert
+    assert all(fruit.cubed for fruit in fruit_salad.fruit)
+```
+
+In this example, `test_fruit_salad` “requests” fruit_bowl (i.e. `def test_fruit_salad(fruit_bowl):`), and when pytest sees this, it will execute the `fruit_bowl` fixture function and pass the object it returns into `test_fruit_salad` as the `fruit_bowl` argument.
+
+# Mocking databases and requests in nodejs with jest
+
+<!-- Firstly read about testing framework [mocha](https://mochajs.org/). -->
+
+>
+Firstly install and get familiar with a testing framework `jest`, see [jest documentation](https://jestjs.io/docs/getting-started). In particular read the [part](https://jestjs.io/docs/getting-started#using-typescript) about typescript extension. You can see some intruduction with examples [here](https://www.valentinog.com/blog/jest/)
+
+Furthermore, read about mocking functions, modules, etc. at [mocking with jest](https://jestjs.io/docs/mock-functions).
+<!-- 
+If you like you can use other frameworks like [sinon](https://sinonjs.org/#get-started)) -->
+Read about supertest framework, see [testing of http requests with supertest](https://www.npmjs.com/package/supertest)
+
+See how you can measure [coverage](https://www.valentinog.com/blog/jest-coverage/)
+
+At the end see the following examples:
+1. [mock requests example](https://blog.logrocket.com/node-js-express-test-driven-development-jest/) Here you will learn how to run basic tests with `node:test` and if you jump to the `Using Jest to test backend code` section then you will see an example of http testing with jest and  supertest.
+2. [mock database example](https://www.sammeechward.com/mocking-a-database-with-jest-in-javascript)
+3. Supplement*. If you want to make you imports prettier you can use typescript paths see e.g. [this stack question](https://stackoverflow.com/questions/43281741/how-can-i-use-paths-in-tsconfig-json) and [this tutorial for jest-ts](https://medium.com/@fmoessle/typescript-paths-with-ts-node-ts-node-dev-and-jest-671deacf6428)
