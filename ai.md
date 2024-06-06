@@ -86,6 +86,7 @@ When you visit `http://localhost:3000/graphql` then you can e.g. ask for (rememb
 }
 ```
 
+See what happens if you add requirement `stick to good programming principles`.
 - [blackbox chat](https://www.blackbox.ai/chat/nYq7SRU) handles nicely e.g. curl request. E.g. when i asked for `create c++ application which fetches the list of pull requests for given public repository and given user` then i received (after small modifications
 ```cpp
 
@@ -229,4 +230,45 @@ app.use('/graphql', graphqlHTTP({
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000/graphql');
 });
+```
+
+  - You can easily generate skeletons of you html pages using e.g. [zzzcode.ai](https://zzzcode.ai/html/code-generator?id=310e7988-e79b-4613-83cd-aaea44b73aa3). When I asked for ```personal webpage for Mike who is an assistant professor at faculty of mathematics. Navigation bar should contain contact, interests and publications. Contact should contain email mike@proton.me and office number 5.``` i obtained
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mike's Webpage</title>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#interests">Interests</a></li>
+                <li><a href="#publications">Publications</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <section id="contact">
+        <h2>Contact Information</h2>
+        <p>Email: <a href="mailto:mike@proton.me">mike@proton.me</a></p>
+        <p>Office Number: 5</p>
+    </section>
+    
+    <section id="interests">
+        <h2>Interests</h2>
+        <p>Insert Interests Here</p>
+    </section>
+    
+    <section id="publications">
+        <h2>Publications</h2>
+        <p>Insert Publications Here</p>
+    </section>
+</body>
+</html>
+
 ```
