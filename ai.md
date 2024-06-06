@@ -87,7 +87,7 @@ When you visit `http://localhost:3000/graphql` then you can e.g. ask for (rememb
 ```
 
 See what happens if you add requirement `stick to good programming principles`.
-- [blackbox chat](https://www.blackbox.ai/chat/nYq7SRU) handles nicely e.g. curl request. E.g. when i asked for `create c++ application which fetches the list of pull requests for given public repository and given user` then i received (after small modifications
+- [blackbox chat](https://www.blackbox.ai) handles nicely e.g. curl request. E.g. when i asked for `create c++ application which fetches the list of pull requests for given public repository and given user` then i received (after small modifications
 ```cpp
 
 #include <iostream>
@@ -232,7 +232,7 @@ app.listen(3000, () => {
 });
 ```
 
-  - You can easily generate skeletons of you html pages using e.g. [zzzcode.ai](https://zzzcode.ai/html/code-generator?id=310e7988-e79b-4613-83cd-aaea44b73aa3). When I asked for ```personal webpage for Mike who is an assistant professor at faculty of mathematics. Navigation bar should contain contact, interests and publications. Contact should contain email mike@proton.me and office number 5.``` i obtained
+  - You can easily generate skeletons of you html pages using e.g. [zzzcode.ai](https://zzzcode.ai/html/code-generator). When I asked for ```personal webpage for Mike who is an assistant professor at faculty of mathematics. Navigation bar should contain contact, interests and publications. Contact should contain email mike@proton.me and office number 5.``` i obtained
 ```html
 <!DOCTYPE html>
 <html lang="en">
